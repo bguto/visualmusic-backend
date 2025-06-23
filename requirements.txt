@@ -1,0 +1,6 @@
+flask
+flask_cors
+basic_pitch
+yt-dlp
+demucs
+gunicorn
