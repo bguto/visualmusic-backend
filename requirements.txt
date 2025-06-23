@@ -4,5 +4,5 @@ basic_pitch
 yt-dlp
 demucs
 gunicorn
-setuptools
+setuptools>=42
 wheel
