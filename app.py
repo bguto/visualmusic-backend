@@ -1,29 +1,31 @@
 import os
 import tempfile
 import uuid
-import shutil
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from utils import process_youtube_to_notes
+from utils import process_audio_file_to_notes
 
 app = Flask(__name__)
+# Temporalmente permitimos cualquier origen para asegurar que no sea CORS
+CORS(app, origins="*")
 
-# ✅ Permitir solicitudes solo desde tu frontend de Netlify
-CORS(app, origins=["https://thewinehousevisualizer.netlify.app"])
+@app.route("/api/upload", methods=["POST"])
+def upload_audio():
+    if "audio" not in request.files:
+        return jsonify({"error": "No se ha proporcionado archivo de audio"}), 400
 
-@app.route("/api/process", methods=["POST"])
-def process():
-    data = request.get_json()
-
-    # Validación básica
-    if not data or "youtube_url" not in data:
-        return jsonify({"error": "No YouTube URL provided"}), 400
-
-    youtube_url = data["youtube_url"]
+    audio_file = request.files["audio"]
+    if audio_file.filename == "":
+        return jsonify({"error": "Nombre de archivo vacío"}), 400
 
     try:
-        notes_json = process_youtube_to_notes(youtube_url)
-        return jsonify(notes_json)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ext = audio_file.filename.rsplit(".", 1)[1].lower()
+            path = os.path.join(tmpdir, f"{uuid.uuid4()}.{ext}")
+            audio_file.save(path)
+
+            notes = process_audio_file_to_notes(path)
+        return jsonify(notes)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
