@@ -7,14 +7,19 @@ from flask_cors import CORS
 from utils import process_youtube_to_notes
 
 app = Flask(__name__)
-CORS(app)
+
+# ✅ Permitir solicitudes solo desde tu frontend de Netlify
+CORS(app, origins=["https://thewinehousevisualizer.netlify.app"])
 
 @app.route("/api/process", methods=["POST"])
 def process():
-    data = request.json
-    youtube_url = data.get("youtube_url")
-    if not youtube_url:
+    data = request.get_json()
+
+    # Validación básica
+    if not data or "youtube_url" not in data:
         return jsonify({"error": "No YouTube URL provided"}), 400
+
+    youtube_url = data["youtube_url"]
 
     try:
         notes_json = process_youtube_to_notes(youtube_url)
