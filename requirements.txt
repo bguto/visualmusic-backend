@@ -3,12 +3,10 @@ flask-cors==3.0.10
 basic_pitch
 yt-dlp
 demucs
+torch
+torchaudio
 gunicorn
 setuptools>=42
 wheel
-
-# Para que Demucs y Basic Pitch funcionen
-torch
-torchaudio
 numpy
 scipy
