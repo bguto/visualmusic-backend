@@ -1,5 +1,5 @@
 flask
-flask_cors
+flask-cors==3.0.10
 basic_pitch
 yt-dlp
 demucs
