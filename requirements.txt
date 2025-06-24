@@ -6,3 +6,9 @@ demucs
 gunicorn
 setuptools>=42
 wheel
+
+# Para que Demucs y Basic Pitch funcionen
+torch
+torchaudio
+numpy
+scipy
